@@ -20,6 +20,6 @@ using namespace ardupilot_command;
 command command_now;
 int main()
 {
-    cout<<"hah";
+    cout<<"hahaaa";
     return 0;
 }
