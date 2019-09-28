@@ -43,6 +43,8 @@ void state_cb(const mavros_msgs::State::ConstPtr& msg)
     bool connected=current_state.connected;
     bool armed=current_state.armed;
 }
+
+//速度控制
 mavros_msgs::PositionTarget move_vel(double x,double y)
 {
     mavros_msgs::PositionTarget v;
@@ -54,6 +56,16 @@ mavros_msgs::PositionTarget move_vel(double x,double y)
     v.velocity.y=y;
     return v;
 
+}
+//位置控制
+mavros_msgs::PositionTarget move_pos(double x,double y)
+{
+    mavros_msgs::PositionTarget pos;
+    pos.coordinate_frame=1;
+    pos.type_mask=/*1+2+4+*/8+16+32+64+128+256+512+1024+2048;
+    pos.position.x=x;
+    pos.position.y=y;
+    return pos;
 }
 int main(int argc,char** argv)
 {
@@ -94,13 +106,19 @@ int main(int argc,char** argv)
     //arm service 赋值为true表示arm，false则为disarm，赋值之后还要用service的客户端call一次
     srv_arm_i.request.value=true;
     arming_client_i.call(srv_arm_i);
-    while(!srv_arm_i.response.success)
+    while(!current_state.armed)
     {
         arm_flag++;
         ROS_INFO("the %d arm failed,arm again ",arm_flag);
         srv_arm_i.request.value=true;
         arming_client_i.call(srv_arm_i);
+        rate.sleep();
+        ros::spinOnce();
         sleep(1);
+        if(current_state.armed)
+        {
+            break;
+        }
         if(arm_flag>19)
         {
             ROS_INFO("arm failed,please reboot");
@@ -108,7 +126,7 @@ int main(int argc,char** argv)
         }
 
     }
-    ROS_INFO("arm succsess");
+    ROS_INFO(" arm success  ");
  
     // if(arming_client_i.call(srv_arm_i)&&srv_arm_i.response.success)
     // {
@@ -137,16 +155,25 @@ int main(int argc,char** argv)
     // sleep(10);
     //********************************************************************
     //速度发布
-    ros::Publisher vel_pub=nh.advertise<mavros_msgs::PositionTarget>("mavros/setpoint_raw/local",100);
-    for(int i=0;i<100;i++)
+     ros::Publisher vel_pub=nh.advertise<mavros_msgs::PositionTarget>("mavros/setpoint_raw/local",100);
+    ros::Publisher pos_pub=nh.advertise<mavros_msgs::PositionTarget>("/mavros/setpoint_raw/local",10);
+    for(int i=0;i<10;i++)
     {
         
         vel_pub.publish(move_vel(1,0));
         sleep(1);
         ROS_INFO("publish velocity%i",i);
     }
+    // for(int i=0;i<5;i++)
+    // {
+    //     pos_pub.publish(move_pos(20,20));
+    //     ROS_INFO("move to 10 10");
+    //     sleep(1);
+    // }
+    
+ 
   
-
+  
 
     while (ros::ok())
     {
