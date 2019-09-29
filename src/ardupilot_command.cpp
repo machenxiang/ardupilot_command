@@ -155,22 +155,47 @@ int main(int argc,char** argv)
     // sleep(10);
     //********************************************************************
     //速度发布
-     ros::Publisher vel_pub=nh.advertise<mavros_msgs::PositionTarget>("mavros/setpoint_raw/local",100);
+    ros::Publisher vel_pub=nh.advertise<mavros_msgs::PositionTarget>("mavros/setpoint_raw/local",100);
     ros::Publisher pos_pub=nh.advertise<mavros_msgs::PositionTarget>("/mavros/setpoint_raw/local",10);
+    // for(int i=0;i<10;i++)
+    // {
+        
+    //     vel_pub.publish(move_vel(1,0));
+    //     sleep(1);
+    //     ROS_INFO("publish velocity%i",i);
+    // }
+    //***********************guided位置控制**********************************
+    //到第一个点（0.5,0.5）
     for(int i=0;i<10;i++)
     {
-        
-        vel_pub.publish(move_vel(1,0));
+        pos_pub.publish(move_pos(0.5,0.5));
+        ROS_INFO("move to 0.5 0.5");
         sleep(1);
-        ROS_INFO("publish velocity%i",i);
     }
-    // for(int i=0;i<5;i++)
-    // {
-    //     pos_pub.publish(move_pos(20,20));
-    //     ROS_INFO("move to 10 10");
-    //     sleep(1);
-    // }
     
+     //到第二个点（0.5,-0.5）
+    for(int i=0;i<10;i++)
+    {
+        pos_pub.publish(move_pos(0.5,-0.5));
+        ROS_INFO("move to 0.5 -0.5");
+        sleep(1);
+    }
+
+       //到第一个点（-0.5,-0.5）
+    for(int i=0;i<10;i++)
+    {
+        pos_pub.publish(move_pos(-0.5,-0.5));
+        ROS_INFO("move to -0.5 -0.5");
+        sleep(1);
+    }
+
+       //到第一个点（-0.5,0.5）
+    for(int i=0;i<10;i++)
+    {
+        pos_pub.publish(move_pos(-0.5,0.5));
+        ROS_INFO("move to -0.5 0.5");
+        sleep(1);
+    }
  
   
   
