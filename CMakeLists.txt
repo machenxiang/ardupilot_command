@@ -128,6 +128,15 @@ add_executable(ardupilot_command
 target_link_libraries(ardupilot_command
   ${catkin_LIBRARIES}
 )
+
+
+add_executable(square
+  src/square.cpp
+)
+
+target_link_libraries(square
+  ${catkin_LIBRARIES}
+)
 ## Specify additional locations of header files
 ## Your package locations should be listed before other locations
 include_directories(

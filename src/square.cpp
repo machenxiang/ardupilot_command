@@ -1,11 +1,11 @@
 /***************************************************************************************************************************
-* ardupilot velocity control
+* square aplication
 *
 * Author: mcx
 *
-* Update Time: 2019.9.25
+* Update Time: 2019.9.29
 *
-* Introduction:  publish velocity to control the rover
+* Introduction:  publish position to control the vehcile
 
 ***************************************************************************************************************************/
 
@@ -128,14 +128,7 @@ int main(int argc,char** argv)
     }
     ROS_INFO(" arm success  ");
  
-    // if(arming_client_i.call(srv_arm_i)&&srv_arm_i.response.success)
-    // {
-    //     ROS_INFO("arming success");
-    // }
-    // else
-    // {
-    //     ROS_INFO("fail arming");
-    // }
+
     sleep(2);
     //***************************用于copter********************************
     //takeoff
