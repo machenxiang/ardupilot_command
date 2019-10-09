@@ -137,6 +137,14 @@ add_executable(square
 target_link_libraries(square
   ${catkin_LIBRARIES}
 )
+
+add_executable(pub_odom
+  src/pub_odom.cpp
+)
+
+target_link_libraries(pub_odom
+  ${catkin_LIBRARIES}
+)
 ## Specify additional locations of header files
 ## Your package locations should be listed before other locations
 include_directories(
