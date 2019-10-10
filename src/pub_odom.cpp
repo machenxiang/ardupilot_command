@@ -31,9 +31,7 @@
 #include <mavros/frame_tf.h>
 #include <std_msgs/Float64.h>
 #include <mavros_msgs/PositionTarget.h>
-
-
-
+using namespace std;
 
 double current_yaw;
 nav_msgs::Odometry odom;
@@ -69,15 +67,21 @@ int main(int argc,char **argv)
     ros::Publisher odom_pub=nh.advertise<nav_msgs::Odometry>("odom",50);
     while(ros::ok())
     {
-        ros::spinOnce();
+        ros::Rate rate(10);
         current_yaw=rpy.z;
         current_time=ros::Time::now();
         odom.header.stamp=current_time;
+        odom.header.frame_id="odom";
+        odom.child_frame_id="base_footprint";
         odom.pose.pose.position.x=0;
         odom.pose.pose.position.y=0;
         odom.pose.pose.position.z=0;
-        odom.pose.pose.orientation=tf::createQuaternionMsgFromYaw(yaw);
+        odom.pose.pose.orientation=tf::createQuaternionMsgFromYaw(current_yaw);
         odom_pub.publish(odom);
+        cout<<"yaw="<<current_yaw<<endl;
+        ROS_INFO("hah");
+        ros::spinOnce();
+        rate.sleep();
     }
 
 
