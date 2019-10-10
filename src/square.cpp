@@ -27,7 +27,7 @@
 #include<iostream>
 using namespace std;
 //自定义command消息
-#include<ardupilot_command/command.h>
+//#include<ardupilot_command/command.h>
 
 mavros_msgs::State current_state;
 //using namespace ardupilot_command;

@@ -25,9 +25,12 @@
 #include <std_msgs/Float64.h>
 #include <mavros_msgs/PositionTarget.h>
 #include<iostream>
+#include<geometry_msgs/Twist.h>
+
+
 using namespace std;
 //自定义command消息
-#include<ardupilot_command/command.h>
+//#include<ardupilot_command/command.h>
 
 mavros_msgs::State current_state;
 //using namespace ardupilot_command;
@@ -43,6 +46,20 @@ void state_cb(const mavros_msgs::State::ConstPtr& msg)
     bool connected=current_state.connected;
     bool armed=current_state.armed;
 }
+geometry_msgs::Twist TwistVel;
+void velocity_cb(const geometry_msgs::Twist::ConstPtr& msg)
+{ 
+  TwistVel=*msg;
+        // TwistVel.angular.x=0;
+        // TwistVel.angular.y=0;
+        // TwistVel.angular.z=1;
+        // TwistVel.linear.x=1;         
+        // TwistVel.linear.y=0;
+        // TwistVel.linear.z=0;
+        ROS_INFO("hah");
+
+}
+
 
 //速度控制
 mavros_msgs::PositionTarget move_vel(double x,double y)
@@ -155,57 +172,33 @@ int main(int argc,char** argv)
     // sleep(10);
     //********************************************************************
     //速度发布
-    ros::Publisher vel_pub=nh.advertise<mavros_msgs::PositionTarget>("mavros/setpoint_raw/local",100);
+    ros::Publisher vel_pub=nh.advertise<mavros_msgs::PositionTarget>("/mavros/setpoint_raw/local",100);
     ros::Publisher pos_pub=nh.advertise<mavros_msgs::PositionTarget>("/mavros/setpoint_raw/local",10);
-    // for(int i=0;i<10;i++)
-    // {
-        
-    //     vel_pub.publish(move_vel(1,0));
-    //     sleep(1);
-    //     ROS_INFO("publish velocity%i",i);
-    // }
-    //***********************guided位置控制**********************************
-    //到第一个点（0.5,0.5）
-    for(int i=0;i<10;i++)
-    {
-        pos_pub.publish(move_pos(10,10));
-        ROS_INFO("move to 0.5 0.5");
-        sleep(1);
-    }
-    
-     //到第二个点（0.5,-0.5）
-    for(int i=0;i<10;i++)
-    {
-        pos_pub.publish(move_pos(10,-10));
-        ROS_INFO("move to 0.5 -0.5");
-        sleep(1);
-    }
+    ros::Publisher TwistVelocity_pub=nh.advertise<geometry_msgs::Twist>("/mavros/setpoint_velocity/cmd_vel_unstamped",10);
+    ros::Subscriber velocity_sub=nh.subscribe<geometry_msgs::Twist>("/dock_drive/velocity",10,velocity_cb);
 
-       //到第一个点（-0.5,-0.5）
-    for(int i=0;i<10;i++)
-    {
-        pos_pub.publish(move_pos(-10,-10));
-        ROS_INFO("move to -0.5 -0.5");
-        sleep(1);
-    }
-
-       //到第一个点（-0.5,0.5）
-    for(int i=0;i<10;i++)
-    {
-        pos_pub.publish(move_pos(-10,10));
-        ROS_INFO("move to -0.5 0.5");
-        sleep(1);
-    }
- 
-  
-  
 
     while (ros::ok())
-    {
-       ros::spinOnce();
-       rate.sleep();
+    {      
+    //     TwistVel.angular.x=0;
+    //     TwistVel.angular.y=0;
+    //     TwistVel.angular.z=1;
+    //     TwistVel.linear.x=1;         
+    //     TwistVel.linear.y=0;
+    //     TwistVel.linear.z=0;
+
+        for(int i=0;i<2;i++)
+        {
+            TwistVelocity_pub.publish(TwistVel);
+            ROS_INFO("i=%d",i);
+            sleep(1);
+            //rate.sleep();
+        }
+        ros::spinOnce();
+        rate.sleep();
     }
 
-    cout<<"hahaaa";
+
+    
     return 0;
 }
