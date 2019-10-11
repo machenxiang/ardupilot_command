@@ -1,0 +1,33 @@
+{
+    "configurations": [
+        {
+            "browse": {
+                "databaseFilename": "",
+                "limitSymbolsToIncludedHeaders": true
+            },
+            "includePath": [
+                "/home/b210/ArduPilotCommand_ws/devel/include/**",
+                "/home/b210/catkin_ws/devel/include/**",
+                "/opt/ros/kinetic/include/**",
+                "/home/b210/catkin_ws/src/gazebo_ros_pkgs/gazebo_plugins/include/**",
+                "/home/b210/catkin_ws/src/gazebo_ros_pkgs/gazebo_ros/include/**",
+                "/home/b210/catkin_ws/src/gazebo_ros_pkgs/gazebo_ros_control/include/**",
+                "/home/b210/ArduPilotCommand_ws/src/kids100a_auto_docking/include/**",
+                "/home/b210/ArduPilotCommand_ws/src/kids100a_dock_drive/include/**",
+                "/home/b210/catkin_ws/src/mavros/libmavconn/include/**",
+                "/home/b210/catkin_ws/src/mavros/mavros/include/**",
+                "/home/b210/catkin_ws/src/mavros/mavros_msgs/include/**",
+                "/home/b210/catkin_ws/src/octomap_mapping/octomap_server/include/**",
+                "/home/b210/catkin_ws/src/px4_command/include/**",
+                "/home/b210/catkin_ws/src/mavros/test_mavros/include/**",
+                "/usr/include/**"
+            ],
+            "name": "ROS",
+            "intelliSenseMode": "gcc-x64",
+            "compilerPath": "/usr/lib/ccache/gcc",
+            "cStandard": "c11",
+            "cppStandard": "c++17"
+        }
+    ],
+    "version": 4
+}

@@ -32,6 +32,7 @@
 #include <std_msgs/Float64.h>
 #include <mavros_msgs/PositionTarget.h>
 using namespace std;
+#define pi 3.1415926
 
 double current_yaw;
 nav_msgs::Odometry odom;
@@ -47,11 +48,11 @@ void local_pos_cb(const geometry_msgs::PoseStamped::ConstPtr& msg)
     //获取位置信息中的位姿数据
     orientation=msg->pose.orientation;
     //普通四元数转化为tf四元数
-    tf::quaternionMsgToTF(orientation,tf_orientation);
-    tf::Matrix3x3(tf_orientation).getRPY(roll,pitch,yaw);
-    rpy.x=roll;
-    rpy.y=pitch;
-    rpy.z=yaw;
+    // tf::quaternionMsgToTF(orientation,tf_orientation);
+    // tf::Matrix3x3(tf_orientation).getRPY(roll,pitch,yaw);
+    // rpy.x=roll;
+    // rpy.y=pitch;
+    // rpy.z=yaw;
 
 }
 ros::Time current_time;
@@ -76,7 +77,7 @@ int main(int argc,char **argv)
         odom.pose.pose.position.x=0;
         odom.pose.pose.position.y=0;
         odom.pose.pose.position.z=0;
-        odom.pose.pose.orientation=tf::createQuaternionMsgFromYaw(current_yaw);
+        odom.pose.pose.orientation=orientation;
         odom_pub.publish(odom);
         cout<<"yaw="<<current_yaw<<endl;
         ROS_INFO("hah");
