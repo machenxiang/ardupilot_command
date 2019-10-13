@@ -137,7 +137,13 @@ add_executable(square
 target_link_libraries(square
   ${catkin_LIBRARIES}
 )
+add_executable(velocity
+  src/velocity.cpp
+)
 
+target_link_libraries(velocity
+  ${catkin_LIBRARIES}
+)
 add_executable(pub_odom
   src/pub_odom.cpp
 )

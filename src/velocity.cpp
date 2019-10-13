@@ -15,29 +15,19 @@
 #include<mavros_msgs/CommandTOL.h>
 #include <mavros_msgs/HomePosition.h>
 #include <geometry_msgs/PoseStamped.h>
-#include <mavros_msgs/WaypointList.h>
 #include<mavros_msgs/SetMode.h>
 #include <vector>
-#include <GeographicLib/Geocentric.hpp>
-#include <eigen_conversions/eigen_msg.h>
-#include <sensor_msgs/NavSatFix.h>
-#include <mavros/frame_tf.h>
-#include <std_msgs/Float64.h>
 #include <mavros_msgs/PositionTarget.h>
 #include<iostream>
-#include<geometry_msgs/Twist.h>
+
 
 
 using namespace std;
-//自定义command消息
-//#include<ardupilot_command/command.h>
+
 
 mavros_msgs::State current_state;
-//using namespace ardupilot_command;
 
-//command command_now;
 
-//mavros飞控状态获取
 //arming flag arming 未成功时继续arm的次数
 int arm_flag=0;
 void state_cb(const mavros_msgs::State::ConstPtr& msg)
@@ -46,21 +36,8 @@ void state_cb(const mavros_msgs::State::ConstPtr& msg)
     bool connected=current_state.connected;
     bool armed=current_state.armed;
 }
-geometry_msgs::Twist TwistVel;
-void velocity_cb(const geometry_msgs::Twist::ConstPtr& msg)
-{ 
-  TwistVel.linear.x=msg->linear.x*4;
-  TwistVel.linear.y=msg->linear.y*4;
-  TwistVel.linear.z=msg->linear.z*4;
-  TwistVel.angular.x=msg->angular.x*4;
-  TwistVel.angular.x=msg->angular.x*4;
-  TwistVel.angular.x=msg->angular.x*4;
-  ROS_INFO("hah");
 
-}
-
-
-//速度控制
+//产生速度
 mavros_msgs::PositionTarget move_vel(double x,double y)
 {
     mavros_msgs::PositionTarget v;
@@ -73,16 +50,7 @@ mavros_msgs::PositionTarget move_vel(double x,double y)
     return v;
 
 }
-//位置控制
-mavros_msgs::PositionTarget move_pos(double x,double y)
-{
-    mavros_msgs::PositionTarget pos;
-    pos.coordinate_frame=1;
-    pos.type_mask=/*1+2+4+*/8+16+32+64+128+256+512+1024+2048;
-    pos.position.x=x;
-    pos.position.y=y;
-    return pos;
-}
+
 int main(int argc,char** argv)
 {
     //初始化node
@@ -144,59 +112,25 @@ int main(int argc,char** argv)
     }
     ROS_INFO(" arm success  ");
  
-    // if(arming_client_i.call(srv_arm_i)&&srv_arm_i.response.success)
-    // {
-    //     ROS_INFO("arming success");
-    // }
-    // else
-    // {
-    //     ROS_INFO("fail arming");
-    // }
+
     sleep(2);
-    //***************************用于copter********************************
-    //takeoff
-    // ros::ServiceClient takeoff_client=nh.serviceClient<mavros_msgs::CommandTOL>("mavros/cmd/takeoff");
-    // mavros_msgs::CommandTOL srv_takeoff;
-    // srv_takeoff.request.altitude=2;
-    // srv_takeoff.request.min_pitch=0;
-    // srv_takeoff.request.yaw=0;
-    // if(takeoff_client.call(srv_takeoff)&&srv_takeoff.response.success)
-    // {
-    //     ROS_INFO("takeoff success");
-    // }
-    // else
-    // {
-    //     ROS_INFO("fail to takeoff");
-    // }
-    // sleep(10);
+
     //********************************************************************
     //速度发布
     ros::Publisher vel_pub=nh.advertise<mavros_msgs::PositionTarget>("/mavros/setpoint_raw/local",100);
-    ros::Publisher pos_pub=nh.advertise<mavros_msgs::PositionTarget>("/mavros/setpoint_raw/local",10);
-    ros::Publisher TwistVelocity_pub=nh.advertise<geometry_msgs::Twist>("/mavros/setpoint_velocity/cmd_vel_unstamped",10);
-    ros::Subscriber velocity_sub=nh.subscribe<geometry_msgs::Twist>("/dock_drive/velocity",10,velocity_cb);
+    
 
+    
 
-    while (ros::ok())
-    {      
-    //     TwistVel.angular.x=0;
-    //     TwistVel.angular.y=0;
-    //     TwistVel.angular.z=1;
-    //     TwistVel.linear.x=1;         
-    //     TwistVel.linear.y=0;
-    //     TwistVel.linear.z=0;
-            
-        TwistVelocity_pub.publish(TwistVel);
-        cout<<"TwistVel.linear.x= "<<TwistVel.linear.x<<" TwistVel.linear.y= "<<TwistVel.linear.y<<" TwistVel.linear.z= "<<TwistVel.linear.z<<" TwistVel.linear.x="<<
-        TwistVel.angular.x<<" TwistVel.linear.y= "<<TwistVel.angular.y<<" TwistVel.linear.z= "<<TwistVel.angular.z<<endl;
+    for(int i=0;i<2;i++)
+    {
+        vel_pub.publish(move_vel(1,0));
+        ROS_INFO("i=%d",i);
         sleep(1);
-            //rate.sleep();
-        
-        ros::spinOnce();
-        rate.sleep();
+            
     }
-
-
+    ros::spinOnce();
+    rate.sleep();
     
     return 0;
 }
