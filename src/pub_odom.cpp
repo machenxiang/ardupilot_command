@@ -17,31 +17,15 @@
 #include<geometry_msgs/Quaternion.h>
 #include<tf/transform_datatypes.h>
 #include<iostream>
-
+using namespace std;
 
 #include <mavros_msgs/State.h>
 
 
-#include <mavros_msgs/WaypointList.h>
-#include <sensor_msgs/LaserScan.h>
-#include <vector>
-#include <GeographicLib/Geocentric.hpp>
-#include <eigen_conversions/eigen_msg.h>
-#include <sensor_msgs/NavSatFix.h>
-#include <mavros/frame_tf.h>
-#include <std_msgs/Float64.h>
-#include <mavros_msgs/PositionTarget.h>
-using namespace std;
-#define pi 3.1415926
-
-double current_yaw;
 nav_msgs::Odometry odom;
-//tf四元数
-tf::Quaternion tf_orientation;
 //普通四元数
 geometry_msgs::Quaternion orientation;
-double roll,pitch,yaw;
-geometry_msgs::Vector3 rpy;
+
 
 void local_pos_cb(const geometry_msgs::PoseStamped::ConstPtr& msg)
 {
@@ -69,7 +53,7 @@ int main(int argc,char **argv)
     while(ros::ok())
     {
         ros::Rate rate(10);
-        current_yaw=rpy.z;
+
         current_time=ros::Time::now();
         odom.header.stamp=current_time;
         odom.header.frame_id="odom";
@@ -79,7 +63,7 @@ int main(int argc,char **argv)
         odom.pose.pose.position.z=0;
         odom.pose.pose.orientation=orientation;
         odom_pub.publish(odom);
-        cout<<"yaw="<<current_yaw<<endl;
+        cout<<"odom.x= "<<odom.pose.pose.orientation.x<<" odom.y= "<<odom.pose.pose.orientation.y<<" odom.z= "<<odom.pose.pose.orientation.z<<" odom.w="<<odom.pose.pose.orientation.w<<endl;
         ROS_INFO("hah");
         ros::spinOnce();
         rate.sleep();
