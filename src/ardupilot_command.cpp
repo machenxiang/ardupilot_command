@@ -61,28 +61,7 @@ void velocity_cb(const geometry_msgs::Twist::ConstPtr& msg)
 
 
 //速度控制
-mavros_msgs::PositionTarget move_vel(double x,double y)
-{
-    mavros_msgs::PositionTarget v;
-    v.coordinate_frame=1;
-    //需要的参数为速度,1,2,4 position ignore flag,8,16,32 velocity ingnore flag,64,128,256accelcration/force ignore flag
-    v.type_mask=1+2+4+/*8+16+32*/+64+128+256+512+1024+2048;
-    //pos_target.type_mask = 0b100111000111/*0b100111111000*/;
-    v.velocity.x=x;
-    v.velocity.y=y;
-    return v;
 
-}
-//位置控制
-mavros_msgs::PositionTarget move_pos(double x,double y)
-{
-    mavros_msgs::PositionTarget pos;
-    pos.coordinate_frame=1;
-    pos.type_mask=/*1+2+4+*/8+16+32+64+128+256+512+1024+2048;
-    pos.position.x=x;
-    pos.position.y=y;
-    return pos;
-}
 int main(int argc,char** argv)
 {
     //初始化node
@@ -144,51 +123,22 @@ int main(int argc,char** argv)
     }
     ROS_INFO(" arm success  ");
  
-    // if(arming_client_i.call(srv_arm_i)&&srv_arm_i.response.success)
-    // {
-    //     ROS_INFO("arming success");
-    // }
-    // else
-    // {
-    //     ROS_INFO("fail arming");
-    // }
-    sleep(2);
-    //***************************用于copter********************************
-    //takeoff
-    // ros::ServiceClient takeoff_client=nh.serviceClient<mavros_msgs::CommandTOL>("mavros/cmd/takeoff");
-    // mavros_msgs::CommandTOL srv_takeoff;
-    // srv_takeoff.request.altitude=2;
-    // srv_takeoff.request.min_pitch=0;
-    // srv_takeoff.request.yaw=0;
-    // if(takeoff_client.call(srv_takeoff)&&srv_takeoff.response.success)
-    // {
-    //     ROS_INFO("takeoff success");
-    // }
-    // else
-    // {
-    //     ROS_INFO("fail to takeoff");
-    // }
-    // sleep(10);
-    //********************************************************************
-    //速度发布
-    ros::Publisher vel_pub=nh.advertise<mavros_msgs::PositionTarget>("/mavros/setpoint_raw/local",100);
-    ros::Publisher pos_pub=nh.advertise<mavros_msgs::PositionTarget>("/mavros/setpoint_raw/local",10);
     ros::Publisher TwistVelocity_pub=nh.advertise<geometry_msgs::Twist>("/mavros/setpoint_velocity/cmd_vel_unstamped",10);
     ros::Subscriber velocity_sub=nh.subscribe<geometry_msgs::Twist>("/dock_drive/velocity",10,velocity_cb);
 
 
     while (ros::ok())
     {      
-    //     TwistVel.angular.x=0;
-    //     TwistVel.angular.y=0;
-    //     TwistVel.angular.z=1;
-    //     TwistVel.linear.x=1;         
-    //     TwistVel.linear.y=0;
-    //     TwistVel.linear.z=0;
+        TwistVel.angular.x=0;
+        TwistVel.angular.y=0;
+        TwistVel.angular.z=1;
+        TwistVel.linear.x=0.1;         
+        TwistVel.linear.y=0;
+        TwistVel.linear.z=0;
             
         TwistVelocity_pub.publish(TwistVel);
-        cout<<"TwistVel.linear.x= "<<TwistVel.linear.x<<" TwistVel.linear.y= "<<TwistVel.linear.y<<" TwistVel.linear.z= "<<TwistVel.linear.z<<" TwistVel.linear.x="<<
-        TwistVel.angular.x<<" TwistVel.linear.y= "<<TwistVel.angular.y<<" TwistVel.linear.z= "<<TwistVel.angular.z<<endl;
+        cout<<"linear\n"<<"x= "<<TwistVel.linear.x<<" y= "<<TwistVel.linear.y<<" z= "<<TwistVel.linear.z<<"\nangular\n"<<" x="<<
+        TwistVel.angular.x<<" y= "<<TwistVel.angular.y<<" z= "<<TwistVel.angular.z<<endl;
         sleep(1);
             //rate.sleep();
         
